@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>淘金小镇 Skill</title>
+    <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg" />
+    <link rel="stylesheet" href="./assets/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">SKILLRUSH TOWN</p>
+          <h1>淘金小镇 Skill</h1>
+          <p class="lede">每天从 ClawHub 下载榜 Top100 里，淘出新进榜、增速榜和潜力 Skill。</p>
+        </div>
+        <div class="hero-meta">
+          <span>快照日期</span>
+          <strong id="snapshotDate">加载中</strong>
+        </div>
+      </header>
+
+      <section class="toolbar">
+        <label>
+          <span>历史日期</span>
+          <select id="dateSelect"></select>
+        </label>
+        <input id="searchInput" type="search" placeholder="搜索 Skill / 作者 / slug" />
+      </section>
+
+      <section class="status-grid" id="statusGrid"></section>
+
+      <section class="panel" id="limitationsPanel">
+        <div class="panel-head">
+          <h2>抓取说明</h2>
+        </div>
+        <div id="limitations" class="note-list"></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>潜力 Skill</h2>
+          <span id="potentialCount"></span>
+        </div>
+        <div id="potentialList" class="card-list"></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>今日 Top10</h2>
+        </div>
+        <div id="top10List" class="card-list compact"></div>
+      </section>
+
+      <section class="split">
+        <section class="panel">
+          <div class="panel-head">
+            <h2>下载增速 Top10</h2>
+          </div>
+          <div id="downloadGrowthList" class="rank-list"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2>星标增速 Top10</h2>
+          </div>
+          <div id="starGrowthList" class="rank-list"></div>
+        </section>
+      </section>
+
+      <section class="split">
+        <section class="panel">
+          <div class="panel-head">
+            <h2>新进榜</h2>
+          </div>
+          <div id="newList" class="rank-list"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2>掉榜</h2>
+          </div>
+          <div id="droppedList" class="rank-list"></div>
+        </section>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>完整 Top100</h2>
+          <span id="resultCount"></span>
+        </div>
+        <div id="tableWrap" class="table-wrap"></div>
+      </section>
+    </main>
+
+    <script src="./assets/app.js" defer></script>
+  </body>
+</html>
