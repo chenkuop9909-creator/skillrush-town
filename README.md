@@ -36,6 +36,35 @@
 
 第一次运行没有历史切片，所以不会假装有严格日环比。等连续跑两天后，下载增量、星标增量、排名变化才有意义。
 
+## 安装后怎么用
+
+这个 Skill 本身不会在安装瞬间偷偷创建定时任务。更稳的做法是：安装后第一次使用时，让 Agent 明确帮你完成一次检查，并询问或执行提醒配置。
+
+### 给 Hermes
+
+```text
+请使用 skillrush-town，检查今天的 ClawHub Top100，并帮我设置每天上午 10 点提醒。
+```
+
+如果你只想手动检查一次：
+
+```text
+请使用 skillrush-town，读取 latest.json，总结今天 Top10 和潜力 Skill。
+```
+
+### 给 Codex / Claude Code
+
+在 fork 后的项目根目录里说：
+
+```text
+请读取 AGENTS.md / CLAUDE.md，并按照 skills/skillrush-town/SKILL.md 验证这个项目。
+不要依赖浏览器，先跑 headless validation。
+```
+
+### 提醒机制
+
+项目自己的 GitHub Actions 负责每天更新数据；用户提醒属于个人 Agent 侧能力。Hermes 可以用 cron job 每天读取 `data/latest.json` 后发消息；Codex / Claude Code 通常不自带常驻提醒，需要交给 GitHub Actions、系统 cron 或外部 Agent。
+
 ## 本地预览
 
 ```bash

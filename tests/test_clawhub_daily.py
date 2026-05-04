@@ -98,3 +98,48 @@ def test_report_does_not_call_first_run_new_entries():
     assert "今日无新增潜力skill" in report
     assert "当前排名，历史缺失" in report
     assert "新进，下载 n/a" not in report
+
+
+def test_fetch_pages_uses_convex_v4_four_pages_and_cursors(monkeypatch):
+    from scripts import clawhub_daily
+
+    calls = []
+
+    def fake_post_json(url, payload, timeout=25):
+        calls.append((url, payload, timeout))
+        page_no = len(calls)
+        return {
+            "status": "success",
+            "value": {
+                "page": [row(f"skill-{page_no}-{index}", f"Skill {page_no}-{index}", 1000 - page_no * 25 - index, 10) for index in range(25)],
+                "nextCursor": f"cursor-{page_no}",
+            },
+        }
+
+    monkeypatch.setattr(clawhub_daily, "post_json", fake_post_json)
+    monkeypatch.setattr(clawhub_daily, "diagnostic_api_v1", lambda: {})
+
+    result = clawhub_daily.fetch_pages()
+
+    assert len(calls) == 4
+    assert len(result.rows) == 100
+    assert result.pages_succeeded == 4
+    assert result.limitations == []
+
+    for index, (url, payload, timeout) in enumerate(calls):
+        assert url == clawhub_daily.API_URL
+        assert timeout == 25
+        assert payload["path"] == "skills:listPublicPageV4"
+        assert payload["format"] == "json"
+
+        args = payload["args"]
+        assert args["sort"] == "downloads"
+        assert args["dir"] == "desc"
+        assert args["nonSuspiciousOnly"] is True
+        assert args["highlightedOnly"] is False
+        assert args["numItems"] == 25
+
+        if index == 0:
+            assert "cursor" not in args
+        else:
+            assert args["cursor"] == f"cursor-{index}"

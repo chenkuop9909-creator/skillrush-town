@@ -27,6 +27,30 @@ Maintain two surfaces:
 
 Keep the default story simple: "每天从 ClawHub 榜单里淘出增长最快的 AI Skill."
 
+## First Run Usage
+
+Installing this Skill only installs the workflow contract; it must not create
+hidden scheduled jobs during installation.
+
+For a one-off check, the user can say:
+
+```text
+Use skillrush-town to read latest.json and summarize today's ClawHub Top10 and potential Skills.
+```
+
+For a daily reminder in Hermes, create a cron job only when the user asks for it.
+A good default is 10:00 Asia/Shanghai, after the GitHub Actions update window:
+
+```text
+Every day, read https://learnprompt.github.io/skillrush-town/data/latest.json,
+summarize the snapshot date, Top10, potential Skills, limitations, and link to
+https://learnprompt.github.io/skillrush-town/?date=<snapshot_date>.
+```
+
+Codex and Claude Code are usually task runners, not persistent reminder daemons.
+For them, keep the repo forkable and use GitHub Actions, system cron, or Hermes
+cron for notifications.
+
 ## Source Rules
 
 - The canonical ranking source is Convex `api/query`, path
@@ -73,7 +97,10 @@ say "empower", "ecosystem flywheel", "comprehensive platform", or similar filler
 
 ## Validate
 
-Run:
+### Required Headless Validation
+
+These checks must work without Chrome, Playwright, Puppeteer, Camofox, Selenium,
+or browser login state:
 
 ```bash
 python -m py_compile scripts/clawhub_daily.py
@@ -81,10 +108,20 @@ python -m pytest -q
 python "${CODEX_HOME:-$HOME/.codex}/skills/.system/skill-creator/scripts/quick_validate.py" skills/skillrush-town
 ```
 
-For a local page check:
+For a live ingestion check, write into a temporary data directory instead of
+mutating committed data:
 
 ```bash
-python -m http.server 8093
+TMP=$(mktemp -d)
+python scripts/clawhub_daily.py --date 2026-05-04 --data-dir "$TMP/data"
+```
+
+### Optional Browser / Manual Page Check
+
+Only run this when a browser is available:
+
+```bash
+python3 -m http.server 8093
 ```
 
 Open `http://127.0.0.1:8093/?date=2026-05-04` and verify the date selector,
