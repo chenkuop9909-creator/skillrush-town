@@ -218,8 +218,9 @@ function render(snapshot) {
   top10List.innerHTML = items.slice(0, 10).map((item) => skillCard(item)).join("");
   renderRankList(downloadGrowthList, growthItems(items, "download_delta"), (item) => fmtDelta(item.download_delta), "缺少历史切片，无法计算下载增速。");
   renderRankList(starGrowthList, growthItems(items, "star_delta"), (item) => fmtDelta(item.star_delta), "缺少历史切片，无法计算星标增速。");
-  renderRankList(newList, items.filter((item) => item.prev_rank === null && items.some((x) => x.prev_rank !== null)).slice(0, 20), () => "新进", "无，或因缺少历史切片无法判断。");
-  renderRankList(droppedList, droppedItems(snapshot), (item) => `原 #${item.rank}`, "无，或因缺少历史切片无法判断。");
+  const hasHistory = items.some((item) => item.prev_rank !== null);
+  renderRankList(newList, items.filter((item) => item.prev_rank === null && hasHistory).slice(0, 20), () => "新进", hasHistory ? "今日无新进榜。" : "无，或因缺少历史切片无法判断。");
+  renderRankList(droppedList, droppedItems(snapshot), (item) => `原 #${item.rank}`, hasHistory ? "今日无掉榜。" : "无，或因缺少历史切片无法判断。");
   renderTable(items);
 }
 

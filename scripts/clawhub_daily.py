@@ -281,10 +281,12 @@ def render_report(snapshot: dict[str, Any], dropped: list[dict[str, Any]]) -> st
     lines += ["", "## 新进榜", ""]
     has_history = any(item.get("prev_rank") is not None for item in items)
     new_entries = [item for item in items if has_history and item.get("prev_rank") is None]
-    lines.extend([line_for_item(item) for item in new_entries[:20]] or ["- 无，或因缺少历史切片无法判断。"])
+    new_empty = "- 今日无新进榜。" if has_history else "- 无，或因缺少历史切片无法判断。"
+    lines.extend([line_for_item(item) for item in new_entries[:20]] or [new_empty])
 
     lines += ["", "## 掉榜", ""]
-    lines.extend([f"- 原 #{item.get('rank')} {item.get('name')}（{item.get('author')} / `{item.get('slug')}`）" for item in dropped[:20]] or ["- 无，或因缺少历史切片无法判断。"])
+    dropped_empty = "- 今日无掉榜。" if has_history else "- 无，或因缺少历史切片无法判断。"
+    lines.extend([f"- 原 #{item.get('rank')} {item.get('name')}（{item.get('author')} / `{item.get('slug')}`）" for item in dropped[:20]] or [dropped_empty])
 
     lines += ["", "## Top10 变动", ""]
     lines.extend(line_for_item(item) for item in items[:10])
